@@ -1,0 +1,60 @@
+name: Sync skill
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Sync SKILL.md from the live API
+        env:
+          GIT_AUTHOR_NAME: AgentLive Engineering
+          GIT_AUTHOR_EMAIL: engineering@agentlive.events
+          GIT_COMMITTER_NAME: AgentLive Engineering
+          GIT_COMMITTER_EMAIL: engineering@agentlive.events
+        run: |
+          set -euo pipefail
+          tmp="${RUNNER_TEMP}/SKILL.md.download"
+          if ! curl -fsS https://api.agentlive.events/SKILL.md -o "$tmp"; then
+            echo "Download failed"
+            exit 1
+          fi
+          if [ ! -s "$tmp" ]; then
+            echo "Downloaded skill is empty"
+            exit 1
+          fi
+          if [ "$(head -n 1 "$tmp")" != "---" ]; then
+            echo "Downloaded skill does not start with frontmatter"
+            exit 1
+          fi
+          if ! awk '
+            NR == 1 { next }
+            $0 == "---" { exit !found }
+            /^name:/ { found = 1 }
+            END { exit !found }
+          ' "$tmp"; then
+            echo "Downloaded skill frontmatter is missing a name: line"
+            exit 1
+          fi
+          if cmp -s "$tmp" SKILL.md; then
+            echo "SKILL.md is already up to date"
+            exit 0
+          fi
+          version="$(awk 'BEGIN { FS = ": " } $1 == "version" { print $2; exit }' "$tmp")"
+          if [ -z "$version" ]; then
+            echo "Could not parse version from the downloaded skill"
+            exit 1
+          fi
+          cp "$tmp" SKILL.md
+          git add SKILL.md
+          git commit -m "Sync SKILL.md to ${version}"
+          git push
