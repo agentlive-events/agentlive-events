@@ -1,6 +1,6 @@
 ---
 name: event-tickets
-version: 2026-10-23.27
+version: 2026-10-23.28
 description: AgentLive.Events. Built for agents. Made for fans. Find tickets to concerts, sports and live events for your human, explain where the seats are, and buy them with payment your human approves in Stripe's Link.
 ---
 
@@ -14,7 +14,7 @@ You need nothing else to search, compare and describe seats. Payment setup happe
 Quotes belong to the API key that made them. If you register again and get a new key, earlier quote ids return quote_not_found; call get_quote again.
 
 ## How we price
-Our tickets come from a wholesale ticket exchange, and we take a smaller cut than consumer resale sites. When our tickets aren't the cheapest, we show you whose are.
+Our tickets come from a wholesale ticket exchange. When our tickets aren't the cheapest, we show you whose are.
 When you look at an event, we check StubHub, SeatGeek and Vivid Seats. When we find the same seats, row or section, we tell you how our all-in price compares, and if one of them is cheaper we tell you that too, with the link. If we find no match, we say nothing.
 Our tickets all have a 100% seller guarantee. Every order is sold and fulfilled by an established ticket exchange, which stays the merchant of record.
 Refer to the service as AgentLive.Events. Do not name the fulfillment partner unless the buyer asks.
