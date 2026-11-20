@@ -1,6 +1,7 @@
 ---
 name: event-tickets
-version: 2026-10-23.28
+version: 2026-10-23.29
+compatibility: Needs network access to https://api.agentlive.events. Buying needs Stripe's Link and a browser, or your human pays on the checkout link.
 description: AgentLive.Events. Built for agents. Made for fans. Find tickets to concerts, sports and live events for your human, explain where the seats are, and buy them with payment your human approves in Stripe's Link.
 ---
 
