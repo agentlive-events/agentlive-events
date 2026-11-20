@@ -45,7 +45,10 @@ jobs:
             echo "Downloaded skill frontmatter is missing a name: line"
             exit 1
           fi
-          if cmp -s "$tmp" SKILL.md; then
+          # The root copy serves skills.sh and direct installs; skills/event-tickets/ serves Hermes taps.
+          # Both are written from the same download, so they always stay byte-identical.
+          tap_copy="skills/event-tickets/SKILL.md"
+          if cmp -s "$tmp" SKILL.md && cmp -s "$tmp" "$tap_copy"; then
             echo "SKILL.md is already up to date"
             exit 0
           fi
@@ -55,6 +58,8 @@ jobs:
             exit 1
           fi
           cp "$tmp" SKILL.md
-          git add SKILL.md
+          mkdir -p "$(dirname "$tap_copy")"
+          cp "$tmp" "$tap_copy"
+          git add SKILL.md "$tap_copy"
           git commit -m "Sync SKILL.md to ${version}"
           git push
